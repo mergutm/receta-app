@@ -5,18 +5,38 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return Scaffold(
       body: Column(
         children: <Widget>[
-          _RecipesCard(context),
-          _RecipesCard(context),
-          _RecipesCard(context),
+          _recipesCard(context),
+          _recipesCard(context),
+          _recipesCard(context),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _showButton(context);
+        },
+        backgroundColor: colors.primary,
+        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }
 
-  Widget _RecipesCard(BuildContext context) {
+  Future<void> _showButton(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      builder:
+          (_) => Container(
+            color: Colors.white,
+            height: 500,
+            child: Text("texto de prueba"),
+          ),
+    );
+  }
+
+  Widget _recipesCard(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.all(10.0),
