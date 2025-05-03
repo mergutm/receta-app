@@ -29,9 +29,10 @@ class HomeScreen extends StatelessWidget {
       context: context,
       builder:
           (_) => Container(
+            width: MediaQuery.of(context).size.width,
             color: Colors.white,
             height: 500,
-            child: Text("texto de prueba"),
+            child: FormularioReceta(),
           ),
     );
   }
@@ -86,6 +87,46 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class FormularioReceta extends StatelessWidget {
+  const FormularioReceta({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Form(
+        //key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              "Nueva receta",
+              style: TextStyle(color: colors.primary, fontSize: 20),
+            ),
+            SizedBox(height: 10),
+            _buildTextField(label: "Nombre de la receta"),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({required String label}) {
+    return TextFormField(
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(fontFamily: 'QuickSand', color: Colors.orange),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.orange, width: 2),
+          borderRadius: BorderRadius.circular(10),
         ),
       ),
     );
