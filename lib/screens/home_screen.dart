@@ -94,15 +94,22 @@ class HomeScreen extends StatelessWidget {
 }
 
 class FormularioReceta extends StatelessWidget {
-  const FormularioReceta({super.key});
+  FormularioReceta({super.key});
+
+  //controlador
+  final TextEditingController _recipeName = TextEditingController();
+  final TextEditingController _recipeAuthor = TextEditingController();
+  final TextEditingController _recipeURL = TextEditingController();
+  final TextEditingController _recipeDescription = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final formKey = GlobalKey<FormState>();
     final colors = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Form(
-        //key: _formKey,
+        key: formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -111,24 +118,103 @@ class FormularioReceta extends StatelessWidget {
               style: TextStyle(color: colors.primary, fontSize: 20),
             ),
             SizedBox(height: 10),
-            _buildTextField(label: "Nombre de la receta"),
+            _buildTextField(
+              controller: _recipeName,
+              context: context,
+              label: "Nombre de la receta",
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Introduce el nombre de la receta';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: 10),
+            _buildTextField(
+              controller: _recipeAuthor,
+              context: context,
+              label: "Autor de la receta",
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Introduce el nombre del autor';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: 10),
+            _buildTextField(
+              controller: _recipeURL,
+              context: context,
+              label: "URL de la imagen",
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Introduce la URL de la imagen';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: 10),
+            _buildTextField(
+              controller: _recipeDescription,
+              context: context,
+              label: "Descripción",
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Introduce la descripción';
+                }
+                return null;
+              },
+              maxLines: 4,
+            ),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    Navigator.pop(context);
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colors.primary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text(
+                  "Guardar receta",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTextField({required String label}) {
+  Widget _buildTextField({
+    required String? Function(String?) validator,
+    required TextEditingController controller,
+    required BuildContext context,
+    required String label,
+    int maxLines = 1,
+  }) {
+    final colors = Theme.of(context).colorScheme;
     return TextFormField(
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(fontFamily: 'QuickSand', color: Colors.orange),
+        labelStyle: TextStyle(fontFamily: 'QuickSand', color: colors.primary),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.orange, width: 2),
+          borderSide: BorderSide(color: colors.tertiary, width: 2),
           borderRadius: BorderRadius.circular(10),
         ),
       ),
+      validator: validator,
+      maxLines: maxLines,
     );
   }
 }
