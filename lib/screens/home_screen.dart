@@ -1,8 +1,22 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+//import 'package:http/http.dart' as http show get;
+import 'package:http/http.dart' as http;
 import 'package:recipes_app/screens/recipe_details.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
+
+  Future<List<dynamic>> fetchRecipes() async {
+    // Android 10.0.2.2
+    // IOS 127.0.0.1
+    // WEB
+    //final url = Uri.parse('http://10.0.2.2:12346/recipes');
+    final url = Uri.parse('http://0.0.0.0:3001/recipes');
+    final response = await http.get(url);
+    final data = jsonDecode(response.body);
+    return data['recipes'];
+  }
 
   @override
   Widget build(BuildContext context) {
