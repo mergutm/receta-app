@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 //import 'package:http/http.dart' as http show get;
 import 'package:http/http.dart' as http;
 import 'package:recipes_app/screens/recipe_details.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:io' show Platform;
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -11,23 +13,108 @@ class HomeScreen extends StatelessWidget {
     // Android 10.0.2.2
     // IOS 127.0.0.1
     // WEB
-    //final url = Uri.parse('http://10.0.2.2:12346/recipes');
-    final url = Uri.parse('http://0.0.0.0:3001/recipes');
-    final response = await http.get(url);
-    final data = jsonDecode(response.body);
-    return data['recipes'];
+
+    String getBaseUrl() {
+      if (kIsWeb) {
+        // Running in a web browser - assuming server is accessible from browser's perspective
+        // This might need adjustment based on how you host/proxy your API for web
+        return 'http://localhost:12345'; // Or your domain
+      } else if (Platform.isAndroid) {
+        // Android Emulator uses 10.0.2.2 to access host localhost
+        return 'http://10.0.2.2:12345';
+      } else if (Platform.isIOS) {
+        // iOS Simulator uses localhost or 127.0.0.1
+        return 'http://localhost:12345';
+      } else {
+        // Default or other platforms (handle physical devices separately)
+        // For physical devices, you'd need the host machine's actual network IP
+        // e.g., 'http://192.168.1.100:12345'
+        // Returning localhost as a fallback might not work universally
+        return 'http://localhost:12345';
+      }
+    }
+
+    final url = Uri.parse('${getBaseUrl()}/recipes');
+    //final url = Uri.parse('http://10.0.2.2:12345/recipes');
+    //final url = Uri.parse('http://192.168.2.242:12345/recipes');
+    //final url = Uri.parse('http://0.0.0.0:12345/recipes');
+    //print('Attempting to connect to: $url'); // Helpful for debugging
+
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data['recipes'];
+      } else {
+        //print('Error ${response.statusCode}');
+        return [];
+      }
+    } catch (e) {
+      //print("Errro in request $e");
+      return [];
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    // probando fetchRecipes
+    //final data = fetchRecipes();
+    //fetchRecipes();
+
+    String getBaseUrl() {
+      if (kIsWeb) {
+        // Running in a web browser - assuming server is accessible from browser's perspective
+        // This might need adjustment based on how you host/proxy your API for web
+        return 'http://0.0.0.0:12345'; // Or your domain
+      } else if (Platform.isAndroid) {
+        // Android Emulator uses 10.0.2.2 to access host localhost
+        return 'http://10.0.2.2:12345';
+      } else if (Platform.isIOS) {
+        // iOS Simulator uses localhost or 127.0.0.1
+        return 'http://127.0.0.1:12345';
+      } else {
+        // Default or other platforms (handle physical devices separately)
+        // For physical devices, you'd need the host machine's actual network IP
+        // e.g., 'http://192.168.1.100:12345'
+        // Returning localhost as a fallback might not work universally
+        return 'http://192.168.1.100:12345';
+      }
+    }
+
+    final url = Uri.parse('${getBaseUrl()}/recipes');
+
     final colors = Theme.of(context).colorScheme;
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          _recipesCard(context),
-          _recipesCard(context),
-          _recipesCard(context),
-        ],
+      // body: Column(
+      //   children: <Widget>[
+      //     _recipesCard(context),
+      //     _recipesCard(context),
+      //     _recipesCard(context),
+      //   ],
+      // ),
+      // body: FutureBuilder(future: fetchRecipes(), builder: () {}),
+      body: FutureBuilder<List<dynamic>>(
+        future: fetchRecipes(),
+        builder: (context, snapshot) {
+          //final recipes = snapshot.data;
+          final recipes = snapshot.data ?? [];
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error al cargar recetas: ${snapshot.error}'),
+            );
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text("No se encontró información en $url"));
+          }
+
+          return ListView.builder(
+            itemCount: recipes.length,
+            itemBuilder: (context, index) {
+              return _recipesCard(context, recipes[index]);
+            },
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -52,14 +139,14 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _recipesCard(BuildContext context) {
+  Widget _recipesCard(BuildContext context, dynamic recipe) {
     final colors = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => RecipeDetails(recipeName: "Pasta"),
+            builder: (context) => RecipeDetails(recipeName: recipe['name']),
           ),
         );
       },
@@ -81,8 +168,9 @@ class HomeScreen extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
                     child: Image.network(
-                      'https://myplate-prod.azureedge.us/sites/default/files/styles/recipe_525_x_350_/public/2022-01/Noodles_1.jpg?itok=D8SbUIWg',
+                      //'https://myplate-prod.azureedge.us/sites/default/files/styles/recipe_525_x_350_/public/2022-01/Noodles_1.jpg?itok=D8SbUIWg',
                       //'https://www.excelsior.com.mx/800x600/filters:format(webp):quality(75)/media/pictures/2025/05/03/3301163.jpg',
+                      recipe['image_link'],
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -98,13 +186,13 @@ class HomeScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      "Frijoles charros",
+                      recipe['name'],
                       style: TextStyle(fontSize: 16, fontFamily: 'QuickSand'),
                     ),
                     Container(width: 100, height: 3, color: colors.primary),
                     SizedBox(height: 5),
                     Text(
-                      "Caroline",
+                      recipe['author'],
                       style: TextStyle(fontSize: 12, fontFamily: 'QuickSand'),
                     ),
                   ],
