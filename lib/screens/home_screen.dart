@@ -75,13 +75,13 @@ class HomeScreen extends StatelessWidget {
 
   Widget _recipesCard(BuildContext context, dynamic recipe) {
     final colors = Theme.of(context).colorScheme;
-    print(recipe);
+    //print(recipe);
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => RecipeDetails(recipeName: recipe.name),
+            builder: (context) => RecipeDetails(recipesData: recipe),
           ),
         );
       },

@@ -1,4 +1,5 @@
 class RecipeModel {
+  int id;
   String name;
   String author;
   String imageLink;
@@ -6,6 +7,7 @@ class RecipeModel {
 
   //constructor
   RecipeModel({
+    required this.id,
     required this.name,
     required this.author,
     required this.imageLink,
@@ -14,6 +16,7 @@ class RecipeModel {
 
   factory RecipeModel.fromJSON(Map<String, dynamic> json) {
     return RecipeModel(
+      id: json['id'],
       name: json['name'],
       author: json['author'],
       imageLink: json['imageLink'],
@@ -24,6 +27,7 @@ class RecipeModel {
   // conversor a JSON
   Map<String, dynamic> toJSON() {
     return {
+      'id': id,
       'name': name,
       'author': author,
       'imageLink': imageLink,
@@ -33,6 +37,6 @@ class RecipeModel {
 
   @override
   String toString() {
-    return 'Recipe(name $name, author: $author, imageLink: $imageLink, recipe: $recipeSteps)';
+    return 'Recipe(id: $id, name: $name, author: $author, imageLink: $imageLink, recipe: $recipeSteps)';
   }
 }

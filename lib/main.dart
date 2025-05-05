@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:recipes_app/providers/recipe_providers.dart';
+import 'package:recipes_app/screens/favorites_screen.dart';
 import 'package:recipes_app/screens/home_screen.dart';
 
 void main() {
@@ -35,16 +36,22 @@ class Recetario extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: colors.primary,
-          title: Text("Recetario ...", style: TextStyle(color: Colors.white)),
+          title: Text(
+            "Recetario de mamá",
+            style: TextStyle(color: Colors.white),
+          ),
           bottom: TabBar(
             indicatorColor: Colors.white,
             labelColor: Colors.white,
-            unselectedLabelColor: colors.tertiary,
-            tabs: <Widget>[Tab(icon: Icon(Icons.home), text: 'Inicio')],
+            unselectedLabelColor: Colors.grey,
+            tabs: <Widget>[
+              Tab(icon: Icon(Icons.home), text: 'Inicio'),
+              Tab(icon: Icon(Icons.favorite), text: 'Favoritos'),
+            ],
           ),
         ),
         body: //HomeScreen(),
-            TabBarView(children: [HomeScreen()]),
+            TabBarView(children: [HomeScreen(), FavoritesScreen()]),
       ),
     );
   }
