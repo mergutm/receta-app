@@ -59,6 +59,44 @@ class RecipeDetailsState extends State<RecipeDetails> {
           ),
         ],
       ),
+
+      body: Padding(
+        padding: EdgeInsets.all(25),
+
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+
+          children: [
+            Padding(
+              //padding: EdgeInsets.all(20),
+              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+              child: Image.network(widget.recipesData.imageLink),
+            ),
+            SizedBox(height: 10),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.recipesData.name,
+                  style: TextStyle(fontFamily: 'Montserat', fontSize: 20),
+                ),
+                Text("By ${widget.recipesData.author}"),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  color: Theme.of(context).colorScheme.primary,
+                  height: 3,
+                ),
+                SizedBox(height: 10),
+                Text("Pasos:"),
+                for (var line in widget.recipesData.recipeSteps)
+                  Text(" - $line"),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

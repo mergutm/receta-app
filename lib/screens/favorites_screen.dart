@@ -49,37 +49,41 @@ class FavoriteRecipesCard extends StatelessWidget {
           ),
         );
       },
-      child: Card(
-        color: Colors.white,
-        //child: Row(children: [Text(recipe.name), Text(recipe.author)]),
-        child: Row(
-          children: [
-            Container(
-              decoration: BoxDecoration(color: Colors.amberAccent),
-              height: 100,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(recipe.imageLink, fit: BoxFit.cover),
+      child: Padding(
+        padding: const EdgeInsets.all(18.0),
+        child: Card(
+          color: Colors.white,
+          //child: Row(children: [Text(recipe.name), Text(recipe.author)]),
+          child: Row(
+            children: [
+              Container(
+                decoration: BoxDecoration(color: Colors.amberAccent),
+                height: 100,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.network(recipe.imageLink, fit: BoxFit.cover),
+                ),
               ),
-            ),
-            SizedBox(width: 20),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  recipe.name,
-                  style: TextStyle(fontSize: 18, fontFamily: 'QuikSand'),
-                ),
-                Container(
-                  color: colors.primary,
-                  height: 2,
-                  width: size.width * 0.5,
-                ),
-                Text("By ${recipe.author}", style: TextStyle(fontSize: 14)),
-              ],
-            ),
-          ],
+              SizedBox(width: 20),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    recipe.name,
+                    style: TextStyle(fontSize: 18, fontFamily: 'QuikSand'),
+                  ),
+                  Container(
+                    color: colors.primary,
+                    height: 2,
+                    width: size.width * 0.5,
+                  ),
+                  SizedBox(height: 12),
+                  Text("By ${recipe.author}", style: TextStyle(fontSize: 14)),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
