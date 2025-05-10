@@ -38,6 +38,8 @@ class FavoriteRecipesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -49,7 +51,36 @@ class FavoriteRecipesCard extends StatelessWidget {
       },
       child: Card(
         color: Colors.white,
-        child: Column(children: [Text(recipe.name), Text(recipe.author)]),
+        //child: Row(children: [Text(recipe.name), Text(recipe.author)]),
+        child: Row(
+          children: [
+            Container(
+              decoration: BoxDecoration(color: Colors.amberAccent),
+              height: 100,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.network(recipe.imageLink, fit: BoxFit.cover),
+              ),
+            ),
+            SizedBox(width: 20),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  recipe.name,
+                  style: TextStyle(fontSize: 18, fontFamily: 'QuikSand'),
+                ),
+                Container(
+                  color: colors.primary,
+                  height: 2,
+                  width: size.width * 0.5,
+                ),
+                Text("By ${recipe.author}", style: TextStyle(fontSize: 14)),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

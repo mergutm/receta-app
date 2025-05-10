@@ -79,6 +79,7 @@ class RecipeProviders extends ChangeNotifier {
           favoriteRecipes.remove(recipe);
         } else {
           favoriteRecipes.add(recipe);
+          //print(favoriteRecipes);
         }
         notifyListeners();
       } else {
