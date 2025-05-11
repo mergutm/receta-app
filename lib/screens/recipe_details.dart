@@ -52,9 +52,20 @@ class RecipeDetailsState extends State<RecipeDetails> {
                 isFavorite = !isFavorite;
               });
             },
-            icon: Icon(
-              isFavorite ? Icons.favorite : Icons.favorite_border,
-              color: Colors.white,
+            // icon: Icon(
+            //   isFavorite ? Icons.favorite : Icons.favorite_border,
+            //   color: Colors.white,
+            // ),
+            icon: AnimatedSwitcher(
+              duration: Duration(milliseconds: 300),
+              transitionBuilder: (child, animation) {
+                return ScaleTransition(scale: animation, child: child);
+              },
+              child: Icon(
+                isFavorite ? Icons.favorite : Icons.favorite_border,
+                color: Colors.white,
+                key: ValueKey<bool>(isFavorite),
+              ),
             ),
           ),
         ],
@@ -80,7 +91,12 @@ class RecipeDetailsState extends State<RecipeDetails> {
               children: [
                 Text(
                   widget.recipesData.name,
-                  style: TextStyle(fontFamily: 'Montserat', fontSize: 20),
+                  style: TextStyle(
+                    fontFamily: 'Montserat',
+                    fontSize: 20,
+                    color: colors.primary,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
                 Text("By ${widget.recipesData.author}"),
                 Container(
