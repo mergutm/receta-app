@@ -10,15 +10,15 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // probando fetchRecipes
+    //final data = fetchRecipes();
+    //fetchRecipes();
+
     final recipesProvider = Provider.of<RecipeProviders>(
       context,
       listen: false,
     );
-
-    if (recipesProvider.recipes.isEmpty) {
-      recipesProvider.fetchRecipes();
-      print("Se cargaron las recetas");
-    }
+    recipesProvider.fetchRecipes();
 
     final colors = Theme.of(context).colorScheme;
     return Scaffold(
@@ -31,6 +31,18 @@ class HomeScreen extends StatelessWidget {
           } else if (provider.recipes.isEmpty) {
             return Center(child: Text('No hay recetas'));
           }
+
+          //final recipes = snapshot.data;
+          // final recipes = snapshot.data ?? [];
+          // if (snapshot.connectionState == ConnectionState.waiting) {
+          //   return Center(child: CircularProgressIndicator());
+          // } else if (snapshot.hasError) {
+          //   return Center(
+          //     child: Text('Error al cargar recetas: ${snapshot.error}'),
+          //   );
+          // } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          //   return Center(child: Text("No se encontró información en $url"));
+          // }
 
           return ListView.builder(
             itemCount: provider.recipes.length,
@@ -99,6 +111,11 @@ class HomeScreen extends StatelessWidget {
                       fit: BoxFit.cover,
                     ),
                   ),
+                  // child: ClipRRect(
+                  //   borderRadius: BorderRadius.circular(10),
+                  //   child: Container(),
+                  //   //child: Text("rpu"),
+                  // ),
                 ),
                 SizedBox(width: 20, height: 10),
                 Column(
@@ -240,49 +257,42 @@ class _FormularioRecetaState extends State<FormularioReceta> {
                     print(" nueva receta: ${newRecipe.toString()}");
 
                     bool success = false;
-                    //final localContext = context; // Captura el contexto actual
-
                     try {
                       // Call the saveRecipe function from the provider
                       success = await recipesProvider.saveRecipe(newRecipe);
                     } catch (e) {
+                      // Handle any errors from saveRecipe itself
+                      if (!mounted)
+                        return; // Check mounted again before using context
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Error al intentar guardar: ${e.toString()}',
+                          ),
+                        ),
+                      );
                       return; // Exit if there was an error during save
                     }
 
                     print(success);
 
-                    //if (!mounted) return;
+                    if (!mounted) return;
 
-                    // if (success) {
-                    //   Navigator.pop(localContext);
-                    //   ScaffoldMessenger.of(localContext).showSnackBar(
-                    //     const SnackBar(
-                    //       content: Text('Receta guardada con éxito!'),
-                    //     ),
-                    //   );
-                    // } else {
-                    //   ScaffoldMessenger.of(localContext).showSnackBar(
-                    //     const SnackBar(
-                    //       content: Text('Error al guardar la receta.'),
-                    //     ),
-                    //   );
-                    // }
-
-                    // // Now it's safe to use 'context' because the widget is still mounted.
-                    // if (success) {
-                    //   Navigator.pop(localContext); // Pop the modal bottom sheet
-                    //   ScaffoldMessenger.of(context).showSnackBar(
-                    //     const SnackBar(
-                    //       content: Text('Receta guardada con éxito!'),
-                    //     ),
-                    //   );
-                    // } else {
-                    //   ScaffoldMessenger.of(context).showSnackBar(
-                    //     const SnackBar(
-                    //       content: Text('Error al guardar la receta.'),
-                    //     ),
-                    //   );
-                    // }
+                    // Now it's safe to use 'context' because the widget is still mounted.
+                    if (success) {
+                      Navigator.pop(context); // Pop the modal bottom sheet
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Receta guardada con éxito!'),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Error al guardar la receta.'),
+                        ),
+                      );
+                    }
                     // if (success) {
                     //   Navigator.pop(context); // Go back to the home screen
                     //   ScaffoldMessenger.of(context).showSnackBar(

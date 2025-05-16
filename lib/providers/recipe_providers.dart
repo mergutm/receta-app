@@ -40,8 +40,6 @@ class RecipeProviders extends ChangeNotifier {
 
     final url = Uri.parse('${getBaseUrl()}/recipes');
 
-    //final url = Uri.parse('https://servicios.utm.mx/tutorias/api.php');
-
     print("Fetch Recipes");
     try {
       print("Trying");
@@ -123,6 +121,22 @@ class RecipeProviders extends ChangeNotifier {
     } catch (e) {
       //print("Error updating favorite recipes $e");
       notifyListeners();
+    }
+  }
+
+  // New function to save a recipe
+  Future<bool> saveRecipe(RecipeModel recipe) async {
+    // Assuming your save endpoint is the same or adjust accordingly
+    try {
+      print('Save: recipes length: ${recipes.length}');
+      recipes.add(recipe);
+      print('recipes length: ${recipes.length}');
+
+      notifyListeners();
+      return true;
+    } catch (e) {
+      print('Error saving recipe: $e');
+      return false;
     }
   }
 }
