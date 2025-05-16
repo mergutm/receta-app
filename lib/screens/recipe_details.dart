@@ -12,8 +12,41 @@ class RecipeDetails extends StatefulWidget {
   RecipeDetailsState createState() => RecipeDetailsState();
 }
 
-class RecipeDetailsState extends State<RecipeDetails> {
+class RecipeDetailsState extends State<RecipeDetails>
+    with SingleTickerProviderStateMixin {
   bool isFavorite = false;
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    //iniciar la animación
+    super.initState();
+    //controlar inicio y fin de la animación
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 500),
+    );
+
+    // Controlar lo que pasa durante la animación.
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.5,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+    _scaleAnimation.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _controller.reverse();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    //terminar la animación
+    _controller.dispose();
+    //constructor
+    super.dispose();
+  }
 
   @override
   void didChangeDependencies() {
@@ -56,15 +89,17 @@ class RecipeDetailsState extends State<RecipeDetails> {
             //   isFavorite ? Icons.favorite : Icons.favorite_border,
             //   color: Colors.white,
             // ),
-            icon: AnimatedSwitcher(
-              duration: Duration(milliseconds: 300),
-              transitionBuilder: (child, animation) {
-                return ScaleTransition(scale: animation, child: child);
-              },
+
+            // cambia por la animación definida
+            // icon: AnimatedSwitcher(
+            //   duration: Duration(milliseconds: 300),
+            icon: ScaleTransition(
+              scale: _scaleAnimation,
               child: Icon(
                 isFavorite ? Icons.favorite : Icons.favorite_border,
+
+                ///color: isFavorite ? Colors.white : Colors.amber,
                 color: Colors.white,
-                key: ValueKey<bool>(isFavorite),
               ),
             ),
           ),
