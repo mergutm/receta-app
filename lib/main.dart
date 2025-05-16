@@ -32,7 +32,7 @@ class Recetario extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     return DefaultTabController(
-      length: 4,
+      length: 2,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: colors.primary,
