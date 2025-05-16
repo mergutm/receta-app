@@ -40,8 +40,16 @@ class RecipeProviders extends ChangeNotifier {
 
     final url = Uri.parse('${getBaseUrl()}/recipes');
 
+    //final url = Uri.parse('https://servicios.utm.mx/tutorias/api.php');
+
+    print("Fetch Recipes");
     try {
+      print("Trying");
+
       final response = await http.get(url);
+
+      print("response status ${response.statusCode}");
+      print("respuesta ${response.body}");
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         //return data['recipes'];
@@ -63,30 +71,58 @@ class RecipeProviders extends ChangeNotifier {
     }
   }
 
-  Future<void> toggleFavoriteStatus(RecipeModel recipe) async {
+  Future<void> toggleFavoriteStatusv0(RecipeModel recipe) async {
     final isFavorite = favoriteRecipes.contains(recipe);
 
     try {
       final url = Uri.parse('${getBaseUrl()}/favorites');
-      //final url = Uri.parse(url);
       final response =
           isFavorite
               ? await http.delete(url, body: json.encode({"id": recipe.id}))
               : await http.post(url, body: json.encode(recipe.toJSON()));
 
       if (response.statusCode == 200) {
+        print(response.statusCode);
+
         if (isFavorite) {
           favoriteRecipes.remove(recipe);
         } else {
           favoriteRecipes.add(recipe);
           //print(favoriteRecipes);
         }
+        print(isFavorite);
+        print(favoriteRecipes.length);
+        print(favoriteRecipes);
+
         notifyListeners();
       } else {
         throw Exception("Failure while updating favorite recipes");
       }
+      notifyListeners();
     } catch (e) {
       //print("Error updating favorite recipes $e");
+      notifyListeners();
+    }
+  }
+
+  Future<void> toggleFavoriteStatus(RecipeModel recipe) async {
+    final isFavorite = favoriteRecipes.contains(recipe);
+
+    try {
+      if (isFavorite) {
+        favoriteRecipes.remove(recipe);
+      } else {
+        favoriteRecipes.add(recipe);
+        //print(favoriteRecipes);
+      }
+      print(isFavorite);
+      print(favoriteRecipes.length);
+      print(favoriteRecipes);
+
+      notifyListeners();
+    } catch (e) {
+      //print("Error updating favorite recipes $e");
+      notifyListeners();
     }
   }
 }
